@@ -1,0 +1,193 @@
+# ============================================
+# DentaMate Local Development Docker Compose
+# ============================================
+# Usage: Run this in your local environment
+# Command: docker-compose -f docker-compose.local.yml up
+# ============================================
+
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: dentamate-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - dentamate-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: dentamate-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - dentamate-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ../dentamate-api-gateway
+      dockerfile: Dockerfile
+    container_name: dentamate-api-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      SERVICE_NAME: dentamate-api-gateway
+      AUTH_SERVICE_URL: http://auth-service:3001
+      CLINIC_SERVICE_URL: http://clinic-service:3002
+      APPOINTMENT_SERVICE_URL: http://appointment-service:3003
+      LOG_LEVEL: debug
+    depends_on:
+      - redis
+    networks:
+      - dentamate-network
+    volumes:
+      - ../dentamate-api-gateway:/app
+      - /app/node_modules
+
+  # Auth & User Service
+  auth-service:
+    build:
+      context: ../dentamate-auth-user-service
+      dockerfile: Dockerfile
+    container_name: dentamate-auth-service
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      SERVICE_NAME: dentamate-auth-user-service
+      MONGODB_URI: mongodb://admin:admin123@mongodb:27017/dentamate_auth_db?authSource=admin
+      JWT_SECRET: local-dev-jwt-secret-minimum-32-characters-long
+      JWT_EXPIRY: 24h
+      LOG_LEVEL: debug
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - dentamate-network
+    volumes:
+      - ../dentamate-auth-user-service:/app
+      - /app/node_modules
+
+  # Clinic Core Service
+  clinic-service:
+    build:
+      context: ../dentamate-clinic-core-service
+      dockerfile: Dockerfile
+    container_name: dentamate-clinic-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: development
+      PORT: 3002
+      SERVICE_NAME: dentamate-clinic-core-service
+      MONGODB_URI: mongodb://admin:admin123@mongodb:27017/dentamate_clinic_db?authSource=admin
+      AUTH_SERVICE_URL: http://auth-service:3001
+      LOG_LEVEL: debug
+    depends_on:
+      - mongodb
+      - auth-service
+    networks:
+      - dentamate-network
+    volumes:
+      - ../dentamate-clinic-core-service:/app
+      - /app/node_modules
+
+  # Appointment & Queue Service
+  appointment-service:
+    build:
+      context: ../dentamate-appointment-queue-service
+      dockerfile: Dockerfile
+    container_name: dentamate-appointment-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      NODE_ENV: development
+      PORT: 3003
+      SERVICE_NAME: dentamate-appointment-queue-service
+      MONGODB_URI: mongodb://admin:admin123@mongodb:27017/dentamate_appointment_db?authSource=admin
+      REDIS_URL: redis://redis:6379
+      AUTH_SERVICE_URL: http://auth-service:3001
+      CLINIC_SERVICE_URL: http://clinic-service:3002
+      LOG_LEVEL: debug
+    depends_on:
+      - mongodb
+      - redis
+      - auth-service
+      - clinic-service
+    networks:
+      - dentamate-network
+    volumes:
+      - ../dentamate-appointment-queue-service:/app
+      - /app/node_modules
+
+  # MongoDB Admin UI (Optional)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: dentamate-mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin123
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    depends_on:
+      - mongodb
+    networks:
+      - dentamate-network
+
+  # Redis Commander (Optional)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: dentamate-redis-commander
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - dentamate-network
+
+networks:
+  dentamate-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:
