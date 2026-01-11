@@ -62,7 +62,7 @@ For each service:
 2. **Edit .env file** and replace placeholders with actual values from `imp.txt`:
    ```bash
    # MongoDB (from imp.txt)
-   MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_auth_db?appName=Cluster0
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_auth_db?appName=Cluster0
    
    # Gmail OAuth (from imp.txt - copy actual values)
    GMAIL_CLIENT_ID=<copy-from-imp.txt>
@@ -85,7 +85,7 @@ For each service:
 
 ### MongoDB URI
 ```
-mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/?appName=Cluster0
+mongodb+srv://username:password@cluster.mongodb.net/?appName=Cluster0
 ```
 
 **For each service, append database name:**

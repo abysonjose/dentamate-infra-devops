@@ -60,7 +60,7 @@ PORT=3001
 SERVICE_NAME=dentamate-auth-user-service
 LOG_LEVEL=info
 
-MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_auth_db?appName=Cluster0
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_auth_db?appName=Cluster0
 
 JWT_SECRET=dentamate-auth-super-secret-jwt-key-minimum-32-characters-change-in-production
 JWT_EXPIRY=24h
@@ -88,7 +88,7 @@ PORT=3002
 SERVICE_NAME=dentamate-clinic-core-service
 LOG_LEVEL=info
 
-MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_clinic_db?appName=Cluster0
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_clinic_db?appName=Cluster0
 
 JWT_SECRET=dentamate-auth-super-secret-jwt-key-minimum-32-characters-change-in-production
 JWT_EXPIRY=24h
@@ -111,7 +111,7 @@ PORT=3004
 SERVICE_NAME=dentamate-notification-service
 LOG_LEVEL=info
 
-MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_notification_db?appName=Cluster0
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_notification_db?appName=Cluster0
 
 JWT_SECRET=dentamate-auth-super-secret-jwt-key-minimum-32-characters-change-in-production
 JWT_EXPIRY=24h
@@ -150,7 +150,7 @@ PORT=3005
 SERVICE_NAME=dentamate-billing-payment-service
 LOG_LEVEL=info
 
-MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_billing_db?appName=Cluster0
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_billing_db?appName=Cluster0
 
 JWT_SECRET=dentamate-auth-super-secret-jwt-key-minimum-32-characters-change-in-production
 JWT_EXPIRY=24h

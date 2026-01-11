@@ -31,13 +31,13 @@ The `.env` files with **actual MongoDB URI and OAuth credentials** from `imp.txt
 ### MongoDB URI (from imp.txt)
 ```bash
 # Base URI:
-mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/?appName=Cluster0
+mongodb+srv://username:password@cluster.mongodb.net/?appName=Cluster0
 
 # Auth Service:
-MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_auth_db?appName=Cluster0
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_auth_db?appName=Cluster0
 
 # Clinic Service:
-MONGODB_URI=mongodb+srv://abyjp16:abyjp16@cluster0.ozkxezh.mongodb.net/dentamate_clinic_db?appName=Cluster0
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_clinic_db?appName=Cluster0
 ```
 
 ### Gmail OAuth 2.0 (from imp.txt)
