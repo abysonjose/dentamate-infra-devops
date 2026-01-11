@@ -3,6 +3,8 @@
 ## 🎯 Purpose
 This document defines the standard environment variable naming conventions for all DentaMate microservices.
 
+**📝 Note:** All actual credentials are provided in `imp.txt` at the project root. This document references those values.
+
 ---
 
 ## 📋 Universal Variables (ALL Services)
@@ -43,16 +45,27 @@ CORS_CREDENTIALS=true
 
 ### MongoDB (Standard for all services)
 ```bash
-# Format: mongodb+srv://username:password@cluster.mongodb.net/database_name
+# ⚠️ IMPORTANT: Get MongoDB URI from imp.txt "MongoDB" section
+# Base URI format: mongodb+srv://username:password@cluster.mongodb.net/?appName=Cluster0
+
+# For each service, append the database name to the base URI:
+# - dentamate_auth_db
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_auth_db?appName=Cluster0
 
-# Database names per service:
-# - dentamate_auth_db
 # - dentamate_clinic_db
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_clinic_db?appName=Cluster0
+
 # - dentamate_appointment_db
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_appointment_db?appName=Cluster0
+
 # - dentamate_billing_db
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_billing_db?appName=Cluster0
+
 # - dentamate_records_db
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_records_db?appName=Cluster0
+
 # - dentamate_analytics_db
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dentamate_analytics_db?appName=Cluster0
 ```
 
 ### Redis (For caching and queues)
@@ -105,34 +118,46 @@ ANALYTICS_SERVICE_URL=https://dentamate-analytics-ai-service.onrender.com
 
 ## 📧 Email Configuration (Gmail API)
 
+**⚠️ IMPORTANT: Actual credentials are stored in `imp.txt` at project root.**
+**This file is NOT committed to Git for security. Copy values from there.**
+
+Format from imp.txt (Gmail OAuth 2.0 section):
 ```bash
-GMAIL_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
-GMAIL_CLIENT_SECRET=your-google-client-secret
-GMAIL_REFRESH_TOKEN=your-google-refresh-token
-GMAIL_FROM_EMAIL=your-email@gmail.com
+GMAIL_CLIENT_ID=<from imp.txt - client_id value>
+GMAIL_CLIENT_SECRET=<from imp.txt - client_secret value>
+GMAIL_REFRESH_TOKEN=<from imp.txt - Refresh token value>
+GMAIL_FROM_EMAIL=<from imp.txt - Email value>
+GMAIL_PROJECT_ID=<from imp.txt - project_id value>
 ```
 
 ---
 
 ## 📱 SMS Configuration (Twilio)
 
+**⚠️ IMPORTANT: Actual credentials are stored in `imp.txt` at project root.**
+**This file is NOT committed to Git for security. Copy values from there.**
+
+Format from imp.txt (Twilio SMS section):
 ```bash
-TWILIO_ACCOUNT_SID=your-twilio-account-sid
-TWILIO_AUTH_TOKEN=your-twilio-auth-token
-TWILIO_PHONE_NUMBER=+1234567890
+TWILIO_ACCOUNT_SID=<from imp.txt - Account SID value>
+TWILIO_AUTH_TOKEN=<from imp.txt - Auth Token value>
+TWILIO_PHONE_NUMBER=<from imp.txt - My Twilio phone number value>
 ```
 
 ---
 
 ## 💳 Payment Configuration (Razorpay)
 
-```bash
-# Test credentials
-RAZORPAY_KEY_ID=your-razorpay-key-id
-RAZORPAY_KEY_SECRET=your-razorpay-key-secret
+**⚠️ IMPORTANT: Actual test credentials are stored in `imp.txt` at project root.**
+**This file is NOT committed to Git for security. Copy values from there.**
 
-# Webhook
-RAZORPAY_WEBHOOK_SECRET=your-webhook-secret
+Format from imp.txt (Razorpay section):
+```bash
+RAZORPAY_KEY_ID=<from imp.txt - Test API Key value>
+RAZORPAY_KEY_SECRET=<from imp.txt - Test Key Secret value>
+
+# Webhook secret (configure in Razorpay dashboard)
+RAZORPAY_WEBHOOK_SECRET=your-webhook-secret-from-razorpay-dashboard
 ```
 
 ---
